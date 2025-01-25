@@ -28,7 +28,7 @@ exports.auth=(req,res,next)=>{
      }
 }
 
-exports.isStudent=(req,res,next)=>{
+exports.isNormal=(req,res,next)=>{
     try{
         if(req.user.role!=='Normal'&&req.user.role!='Admin'){
             return res.status(401).json({

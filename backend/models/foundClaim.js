@@ -13,6 +13,11 @@ const foundClaimSchema=new mongoose.Schema({
       description:{
         type:String,
         required:true
+      },
+      status:{
+        type:String,
+        enum:['accept','reject','pending'],
+        default:'pending'
       }
 },{timeStams:true});
 module.exports=mongoose.model("FoundClaim",foundClaimSchema);

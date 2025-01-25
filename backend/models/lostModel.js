@@ -1,6 +1,4 @@
 const mongoose=require("mongoose");
-
-
 const lostSchema=new mongoose.Schema({  
     image:{
         type:String,
@@ -18,6 +16,10 @@ const lostSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         required:true,
         ref:'User'
+    },
+    isAvailable:{
+        type:Boolean,
+        default:true
     },
     claims:[{
             type:mongoose.Schema.Types.ObjectId,

@@ -13,9 +13,9 @@ const foundSchema=new mongoose.Schema({
         required:true,
         ref:'User'
     },
-    close:{
-        type:boolean,
-        default:false
+    isAvailable:{
+        type:Boolean,
+        default:true
     },
     claim:[{
             type:mongoose.Schema.Types.ObjectId,
