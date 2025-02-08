@@ -5,6 +5,7 @@ const User = require("../models/userModel");
 
 exports.create = async (req, res) => {
     try {
+        
         const user_id = req.user._id;
         const { description, location } = req.body;
         if (!description || !location) {
@@ -35,7 +36,8 @@ exports.create = async (req, res) => {
         return res.status(400).json({
             message: "Something Went Wrong",
             success: false,
-            error: e.message
+            error: e.message,
+            e
         })
     }
 }
@@ -160,8 +162,7 @@ exports.getAllByUser = async (req, res) => {
 
 exports.getAll = async (req, res) => {
     try {
-       
-        const founds = await Found.find({}).sort({ createdAt: -1 });
+        const founds = await Found.find({}).sort({ createdAt: -1 }).populate('postby').populate('claim');
         if (founds.length === 0) {
             return res.status(404).json({
                 message: "No posts found",

@@ -7,8 +7,9 @@ const otpGenerator=require("../utils/OtpGeneration");
 const mailSender=require("../utils/mailSender");
 exports.signup = async (req, res) => {
     try {
-        let { email, password, name, phone } = req.body;
-        if (!email || !password || !name || !phone) {
+        console.log(req.body);
+        let { email, password, name, mobile } = req.body;
+        if (!email || !password || !name || !mobile) {
             return res.status(400).json({
                 message: "All fields are required",
                 success: false,
@@ -74,7 +75,7 @@ exports.signup = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            phone,
+            phone:mobile,
             role: "Normal",
             isVerified: false, 
         });
@@ -184,6 +185,7 @@ exports.login=async(req,res)=>{
         }
         user.password = undefined;
         req.token = token;
+        console.log(token);
         return res.cookie("token", token, options).status(200).json({
             success: true,
             message: "User login",

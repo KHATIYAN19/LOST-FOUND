@@ -21,7 +21,7 @@ const lostSchema=new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    claims:[{
+    claim:[{
             type:mongoose.Schema.Types.ObjectId,
             ref:'LostClaim'
           }

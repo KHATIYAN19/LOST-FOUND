@@ -24,6 +24,7 @@ exports.auth=(req,res,next)=>{
         return res.status(401).json({
             message:"something worng went wrong",
             success:false,
+            e
         })
      }
 }

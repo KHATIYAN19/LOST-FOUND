@@ -1,14 +1,14 @@
-const Found = require("../models/FoundModel");
+const Lost = require("../models/lostModel");
 const User = require("../models/userModel");
-const Claim=require("../models/foundClaim");
+const Claim=require("../models/lostClaim");
 exports.create=async(req,res)=>{
      try{
-        const found_id=req.params.id;
+        const lost_id=req.params.id;
         const { description } = req.body;
         const user_id = req.user.id;
-   if(!description||!found_id){
+    if(!description||!lost_id){
     return res.status(400).json({
-        message:"Description and found_id required",
+        message:"Description or  lost_id required",
         success:false
     })
    }
@@ -19,19 +19,19 @@ exports.create=async(req,res)=>{
         success: false,
       });
     }
-    const found = await Found.findById(found_id);
-    if (!found) {
+    const lost = await Lost.findById(lost_id);
+    if (!lost) {
       return res.status(404).json({
-        message: "Found item not found",
+        message: "Lost item not found",
         success: false,
       });
     }
-    found.claim.push(user_id);
-    await found.save();
+    lost.claim.push(user_id);
+    await lost.save();
     const claim = new Claim({
       description,
       user: user_id,
-      found: found_id,
+      lost: lost_id,
     });
     await claim.save();
     return res.status(201).json({
@@ -49,7 +49,7 @@ exports.create=async(req,res)=>{
 }
 exports.deleteClaim = async (req, res) => {
     try {
-      const found_id=req.params.found_id;
+      const lost_id=req.params.found_id;
       const claim_id=req.params.claim_id;
       const user_id = req.user.id;
       const user = await User.findById(user_id);
@@ -59,10 +59,10 @@ exports.deleteClaim = async (req, res) => {
           success: false,
         });
       }
-      const found = await Found.findById(found_id);
-      if (!found) {
+      const lost = await Lost.findById(lost_id);
+      if (!lost) {
         return res.status(404).json({
-          message: "Found item not found",
+          message: "Lost item not found",
           success: false,
         });
       }
@@ -79,9 +79,9 @@ exports.deleteClaim = async (req, res) => {
           success: false,
         });
       }
-      if (found.claim && Array.isArray(found.claim)) {
-        found.claim = found.claim.filter(id => !id.equals(claim_id));
-        await found.save();
+      if (lost.claim && Array.isArray(lost.claim)) {
+        lost.claim = lost.claim.filter(id => !id.equals(claim_id));
+        await lost.save();
       }
       await Claim.findByIdAndDelete(claim_id);
       return res.status(200).json({
@@ -99,7 +99,7 @@ exports.deleteClaim = async (req, res) => {
   exports.update = async (req, res) => {
     try {
       const { description } = req.body;
-      const { found_id, claim_id } = req.params;
+      const { lost_id, claim_id } = req.params;
       const user_id = req.user.id;
       if (!description || description.trim() === "") {
         return res.status(400).json({
@@ -114,10 +114,10 @@ exports.deleteClaim = async (req, res) => {
           success: false,
         });
       }
-      const found = await Found.findById(found_id);
-      if (!found) {
+      const lost = await Lost.findById(lost_id);
+      if (!lost) {
         return res.status(404).json({
-          message: "Found item not found",
+          message: "Lost item not found",
           success: false,
         });
       }
@@ -175,7 +175,7 @@ exports.deleteClaim = async (req, res) => {
   
   exports.AcceptClaim = async (req, res) => {
   try {
-    const { found_id, claim_id } = req.params;
+    const { lost_id, claim_id } = req.params;
     const user_id = req.user.id;
     const user = await User.findById(user_id);
     if (!user) {
@@ -184,10 +184,10 @@ exports.deleteClaim = async (req, res) => {
         success: false,
       });
     }
-    const found = await Found.findById(found_id);
-    if (!found) {
+    const lost = await Found.findById(lost_id);
+    if (!lost) {
       return res.status(404).json({
-        message: "Found item not found",
+        message: "Lost item not found",
         success: false,
       });
     }
@@ -198,13 +198,13 @@ exports.deleteClaim = async (req, res) => {
         success: false,
       });
     }
-    if (found.postby!=user_id) {
+    if (lost.postby!=user_id) {
       return res.status(403).json({
         message: "You are not authorized to update this claim",
         success: false,
       });
     }
-    if(!found.isAvailable){
+    if(!lost.isAvailable){
       return res.status(400).json({
         message: "This product is closed",
         success: false,
@@ -219,7 +219,7 @@ exports.deleteClaim = async (req, res) => {
     claim.status='accept';
     found.isAvailable=false;
     await claim.save();
-    await found.save();
+    await lost.save();
     return res.status(200).json({
       message: "Claim updated successfully",
       success: true,
@@ -235,7 +235,7 @@ exports.deleteClaim = async (req, res) => {
 }
 exports.RejectClaim= async(req,res)=>{
   try {
-    const { found_id, claim_id } = req.params;
+    const { lost_id, claim_id } = req.params;
     const user_id = req.user.id;
     const user = await User.findById(user_id);
     if (!user) {
@@ -244,10 +244,10 @@ exports.RejectClaim= async(req,res)=>{
         success: false,
       });
     }
-    const found = await Found.findById(found_id);
-    if (!found) {
+    const lost = await Lost.findById(lost_id);
+    if (!lost) {
       return res.status(404).json({
-        message: "Found item not found",
+        message: "Lost item not found",
         success: false,
       });
     }
@@ -258,13 +258,13 @@ exports.RejectClaim= async(req,res)=>{
         success: false,
       });
     }
-    if (found.postby!=user_id) {
+    if (lost.postby!=user_id) {
       return res.status(403).json({
         message: "You are not authorized to update this claim",
         success: false,
       });
     }
-    if(!found.isAvailable){
+    if(!lost.isAvailable){
       return res.status(400).json({
         message: "This product is closed",
         success: false,
